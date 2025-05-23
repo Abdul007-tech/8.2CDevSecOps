@@ -43,9 +43,9 @@ pipeline {
         stage('Notify') {
             steps {
                 echo 'Sending email notification (simulation)...'
-                mail to: 's223517772@deakin.edu.au',
-                     subject: 'Jenkins CI/CD Pipeline Finished',
-                     body: "Pipeline completed for Abdul007-tech/8.2CDevSecOps"
+                echo 'Subject: Jenkins CI/CD Pipeline Finished'
+                echo 'Body: Pipeline completed for Abdul007-tech/8.2CDevSecOps'
+
             }
         }
     }
