@@ -37,15 +37,19 @@ pipeline {
                 sh 'npm audit || true'
             }
         }
+        
 
-        stage('SonarCloud Analysis') {
+   stage('SonarCloud Analysis') {
     steps {
         withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
             sh '''
                 wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
                 unzip sonar-scanner-cli-4.8.0.2856-linux.zip
+
                 export PATH=$PATH:$PWD/sonar-scanner-4.8.0.2856-linux/bin
-                sonar-scanner \
+
+                # Run sonar-scanner in same shell as PATH export
+                ./sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner \
                   -Dsonar.organization=abdul007-tech \
                   -Dsonar.projectKey=8.2CDevSecOps \
                   -Dsonar.sources=. \
@@ -55,6 +59,7 @@ pipeline {
         }
     }
 }
+
 
 
         stage('Deploy to Staging') {
