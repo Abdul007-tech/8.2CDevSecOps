@@ -55,6 +55,7 @@ pipeline {
 
             }
         }
+    }
 
         stage('Integration Test on Staging') {
             steps {
