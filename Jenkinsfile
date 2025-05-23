@@ -36,7 +36,7 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo 'Staging simulation: App would be deployed here.'
-                sh 'node app.js & sleep 5 && kill $!' // Just a placeholder for simulation
+                sh 'echo "Simulating deployment" && sleep 3' // Just a placeholder for simulation
             }
         }
 
