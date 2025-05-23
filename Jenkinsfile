@@ -16,7 +16,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'npm test || true' // Allows pipeline to continue despite test failures
+                sh 'npm test || true'
             }
         }
 
@@ -37,34 +37,27 @@ pipeline {
                 sh 'npm audit || true'
             }
         }
-        
-        stage('Install SonarScanner CLI') {
-            steps {
-                sh '''
-                   apt-get update
-                   apt-get install -y unzip wget
-                   wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-                   unzip sonar-scanner-cli-5.0.1.3006-linux.zip
-                   export PATH=$PATH:$PWD/sonar-scanner-5.0.1.3006-linux/bin
-                   '''
-            }
-        }
 
         stage('SonarCloud Analysis') {
             steps {
-            withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-            sh '''
-                sonar-scanner \
-                  -Dsonar.organization=abdul007-tech \
-                  -Dsonar.projectKey=8.2CDevSecOps \
-                  -Dsonar.sources=. \
-                  -Dsonar.host.url=https://sonarcloud.io \
-                  -Dsonar.login=$SONAR_TOKEN
-            '''
-              }
-           }
-        }
+                withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                    sh '''
+                        apt-get update
+                        apt-get install -y unzip wget
+                        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+                        unzip sonar-scanner-cli-5.0.1.3006-linux.zip
+                        export PATH=$PATH:$PWD/sonar-scanner-5.0.1.3006-linux/bin
 
+                        sonar-scanner \
+                          -Dsonar.organization=abdul007-tech \
+                          -Dsonar.projectKey=8.2CDevSecOps \
+                          -Dsonar.sources=. \
+                          -Dsonar.host.url=https://sonarcloud.io \
+                          -Dsonar.login=$SONAR_TOKEN
+                    '''
+                }
+            }
+        }
 
         stage('Deploy to Staging') {
             steps {
