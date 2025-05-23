@@ -37,6 +37,21 @@ pipeline {
                 sh 'npm audit || true'
             }
         }
+        stage('SonarCloud Analysis') {
+            steps {
+            withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+            sh '''
+                sonar-scanner \
+                  -Dsonar.organization=abdul007-tech \
+                  -Dsonar.projectKey=8.2CDevSecOps \
+                  -Dsonar.sources=. \
+                  -Dsonar.host.url=https://sonarcloud.io \
+                  -Dsonar.login=$SONAR_TOKEN
+            '''
+              }
+           }
+        }
+
 
         stage('Deploy to Staging') {
             steps {
