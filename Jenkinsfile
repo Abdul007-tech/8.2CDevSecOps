@@ -23,7 +23,7 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 sh 'echo "Running ESLint..." && npm run lint || true'
-            } 
+            }
         }
 
         stage('Generate Coverage Report') {
@@ -43,11 +43,10 @@ pipeline {
                 withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                     sh '''
                         apt-get update
-                        apt-get install -y unzip wget
+                        apt-get install -y unzip wget openjdk-17-jre
                         wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
                         unzip sonar-scanner-cli-5.0.1.3006-linux.zip
                         export PATH=$PATH:$PWD/sonar-scanner-5.0.1.3006-linux/bin
-
                         sonar-scanner \
                           -Dsonar.organization=abdul007-tech \
                           -Dsonar.projectKey=8.2CDevSecOps \
