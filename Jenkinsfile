@@ -32,7 +32,7 @@ pipeline {
             }
         }
 
-        stage('NPM Audit (Security Scan') {
+        stage('NPM Audit (Security Scan)') {
             steps {
                 sh 'npm audit || true'
             }
@@ -40,63 +40,58 @@ pipeline {
 
         stage('Deploy to Staging') {
             steps {
-                echo 'Staging simulation: App would be deployed here.'
-                sh 'echo "Simulating deployment" && sleep 3'
+                echo 'Simulating deployment to staging...'
+                sh 'echo "Staging deployment in progress..." && sleep 2'
             }
         }
 
         stage('Integration Test on Staging') {
             steps {
-                echo 'Running integration tests on staging environment...'
-                sh 'echo "Simulating integration tests on staging server (e.g., Postman or Cypress)"'
+                echo 'Running simulated integration tests on staging...'
+                sh 'echo "Running tests..." && sleep 2'
             }
         }
 
         stage('Deploy to Production') {
             steps {
-                echo 'Deploying application to production (simulated)...'
-                sh 'echo "Simulating deployment to production server (e.g., AWS EC2 or Heroku)"'
+                echo 'Simulating deployment to production...'
+                sh 'echo "Production deployment in progress..." && sleep 2'
             }
         }
     }
 
     post {
-    success {
-        emailext(
-            subject: 'Jenkins Build Success - 8.2CDevSecOps',
-            body: """
-            The pipeline build completed successfully.
+        success {
+            emailext(
+                subject: "SUCCESS: 8.2CDevSecOps Pipeline - ${env.BUILD_TAG}",
+                body: """Build completed successfully.
 
-            Project: 8.2CDevSecOps
-            Build: ${env.BUILD_URL}
-            """,
-            to: 'abdulrehmanraja007@gmail.com',
-            attachLog: true
-        )
-    }
+Project: 8.2CDevSecOps
+Branch: main
+Build URL: ${env.BUILD_URL}
+""",
+                attachLog: true,
+                compressLog: true,
+                to: 'abdulrehmanraja007@gmail.com'
+            )
+        }
 
-    failure {
-        emailext(
-            subject: 'Jenkins Build Failed - 8.2CDevSecOps',
-            body: """
-            The pipeline failed.
+        failure {
+            emailext(
+                subject: "FAILURE: 8.2CDevSecOps Pipeline - ${env.BUILD_TAG}",
+                body: """Build failed.
 
-            Project: 8.2CDevSecOps
-            Build: ${env.BUILD_URL}
+Project: 8.2CDevSecOps
+Branch: main
+Build URL: ${env.BUILD_URL}
 
-            Check attached log for more details.
-            """,
-            to: 'abdulrehmanraja007@gmail.com',
-            attachLog: true
-        )
-    }
-
-    always {
-        echo 'Cleaning up workspace...'
-        cleanWs()
-    }
-}
-
+Check the attached logs for more details.
+""",
+                attachLog: true,
+                compressLog: true,
+                to: 'abdulrehmanraja007@gmail.com'
+            )
+        }
 
         always {
             echo 'Cleaning up workspace...'
@@ -104,3 +99,4 @@ pipeline {
         }
     }
 }
+
