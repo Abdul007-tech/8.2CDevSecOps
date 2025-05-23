@@ -61,32 +61,42 @@ pipeline {
     }
 
     post {
-        success {
-            emailext(
-                subject: 'Jenkins Build Successful: 8.2CDevSecOps',
-                body: """Good news! Jenkins build completed successfully.
+    success {
+        emailext(
+            subject: 'Jenkins Build Success - 8.2CDevSecOps',
+            body: """
+            The pipeline build completed successfully.
 
-Project: 8.2CDevSecOps
-Branch: main
-Build URL: ${env.BUILD_URL}
-""",
-                to: 'abdulrehmanraja007@gmail.com'
-            )
-        }
+            Project: 8.2CDevSecOps
+            Build: ${env.BUILD_URL}
+            """,
+            to: 'abdulrehmanraja007@gmail.com',
+            attachLog: true
+        )
+    }
 
-        failure {
-            emailext(
-                subject: 'Jenkins Build Failed: 8.2CDevSecOps',
-                body: """The Jenkins build failed.
+    failure {
+        emailext(
+            subject: 'Jenkins Build Failed - 8.2CDevSecOps',
+            body: """
+            The pipeline failed.
 
-Check the logs here: ${env.BUILD_URL}
+            Project: 8.2CDevSecOps
+            Build: ${env.BUILD_URL}
 
-Project: 8.2CDevSecOps
-Branch: main
-""",
-                to: 'abdulrehmanraja007@gmail.com'
-            )
-        }
+            Check attached log for more details.
+            """,
+            to: 'abdulrehmanraja007@gmail.com',
+            attachLog: true
+        )
+    }
+
+    always {
+        echo 'Cleaning up workspace...'
+        cleanWs()
+    }
+}
+
 
         always {
             echo 'Cleaning up workspace...'
