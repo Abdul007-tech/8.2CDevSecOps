@@ -55,7 +55,21 @@ pipeline {
 
             }
         }
-    }
+
+        stage('Integration Test on Staging') {
+            steps {
+                echo 'Running integration tests on staging environment...'
+                sh 'echo "Simulating integration tests on staging server (e.g., Postman or Cypress)"'
+            }
+        }
+
+        stage('Deploy to Production') {
+            steps {
+                echo 'Deploying application to production (simulated)...'
+                sh 'echo "Simulating deployment to production server (e.g., AWS EC2 or Heroku)"'
+             }
+        }
+    
 
     post {
         always {
