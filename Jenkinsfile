@@ -19,6 +19,13 @@ pipeline {
                 sh 'npm test || true' // Allows pipeline to continue despite test failures
             }
         }
+        
+        stage('Code Analysis') {
+            steps {
+                sh 'echo "Running ESLint..." && npm run lint || true'
+            } 
+        }
+
 
         stage('Generate Coverage Report') {
             steps {
