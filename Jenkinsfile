@@ -32,35 +32,11 @@ pipeline {
             }
         }
 
-        stage('NPM Audit (Security Scan)') {
+        stage('NPM Audit (Security Scan') {
             steps {
                 sh 'npm audit || true'
             }
         }
-        
-
-   stage('SonarCloud Analysis') {
-    steps {
-        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-            sh '''
-                wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
-                unzip sonar-scanner-cli-4.8.0.2856-linux.zip
-
-                export PATH=$PATH:$PWD/sonar-scanner-4.8.0.2856-linux/bin
-
-                # Run sonar-scanner in same shell as PATH export
-                ./sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner \
-                  -Dsonar.organization=abdul007-tech \
-                  -Dsonar.projectKey=8.2CDevSecOps \
-                  -Dsonar.sources=. \
-                  -Dsonar.host.url=https://sonarcloud.io \
-                  -Dsonar.login=$SONAR_TOKEN
-            '''
-        }
-    }
-}
-
-
 
         stage('Deploy to Staging') {
             steps {
@@ -82,17 +58,36 @@ pipeline {
                 sh 'echo "Simulating deployment to production server (e.g., AWS EC2 or Heroku)"'
             }
         }
-
-        stage('Notify') {
-            steps {
-                echo 'Sending email notification (simulation)...'
-                echo 'Subject: Jenkins CI/CD Pipeline Finished'
-                echo 'Body: Pipeline completed for Abdul007-tech/8.2CDevSecOps'
-            }
-        }
     }
 
     post {
+        success {
+            emailext(
+                subject: 'Jenkins Build Successful: 8.2CDevSecOps',
+                body: """Good news! Jenkins build completed successfully.
+
+Project: 8.2CDevSecOps
+Branch: main
+Build URL: ${env.BUILD_URL}
+""",
+                to: 'abdulrehmanraja007@gmail.com'
+            )
+        }
+
+        failure {
+            emailext(
+                subject: 'Jenkins Build Failed: 8.2CDevSecOps',
+                body: """The Jenkins build failed.
+
+Check the logs here: ${env.BUILD_URL}
+
+Project: 8.2CDevSecOps
+Branch: main
+""",
+                to: 'abdulrehmanraja007@gmail.com'
+            )
+        }
+
         always {
             echo 'Cleaning up workspace...'
             cleanWs()
